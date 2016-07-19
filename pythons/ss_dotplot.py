@@ -7,6 +7,7 @@ import sys
 import RNA
 import matplotlib
 import Bio
+import matplotlib.pyplot as plt
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
@@ -21,7 +22,11 @@ md_high = RNA.md()
 md_low.temperature = 30
 md_high.temperature = 37
 
-print md_low
+def plot_bppm ( bppm, name ):
+# plot base pair probability matrix, write plot to post script file
+    plt.matshow(bppm, fignum=name, cmap=plt.get_cmap('BuPu'))
+    plt.savefig('%s.ps' % (name), format='ps')
+    return
 
 for seq_file in SeqIO.parse(sys.stdin, "fasta"):
     # obtain the sequence string
@@ -35,6 +40,16 @@ for seq_file in SeqIO.parse(sys.stdin, "fasta"):
     # calculate partition function for both temperatures
     pfstruct_low, pf_low = fc_low.pf()
     pfstruct_high, pf_high = fc_high.pf()
+    # calculate base pair probability matrix
+    bppm_low = fc_low.bpp()
+    bppm_high = fc_high.bpp()
+    # plot bppm
+    plot_bppm(bppm_low, 'low')
+    plot_bppm(bppm_high, 'high')
+#todo: fix naming of the bppm plotfiles
+#    plot_bppm(bppm_low, '%s_low' % (seq_file.id))
+#    plot_bppm(bppm_high, '%s_high' % (seq_file.id))
+    
     # print sequence name, mfes and partition functions for both temperatures
     print seq_file.id
     print mfe_low, mfe_high

@@ -7,28 +7,43 @@
 import RNA
 import matplotlib
 import Bio
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 from Bio.Seq import Seq
 
 # Define sample sequence
 godzilla = Seq('GAGACCCGTAAAAGGGTCTCGAAAGTGTGTAAAAAACACAC')
 godzilla.id = 'Godzilla Queen of Monsters'
-foldgod = RNA.fold_compound(str(godzilla))
+#foldgod = RNA.fold_compound(str(godzilla))
+Hirsch = Seq('CCGCACAGCGGGCAGUGCCC')
+Hirsch.id = 'Papa Hirsch protects us all'
+#foldHirsch = RNA.fold_compound(str(Hirsch))
 
-# calculate partition function for both temperatures
-pfstruct, pf = foldgod.pf()
+monsters = (godzilla, Hirsch)
+# use either 'BuPu' or 'Greys'
+colormap = 'BuPu'
 
-# calculate base pair probability matrix
-bppm = foldgod.bpp()
+def plot_bppm ( bppm, name ):
+# plot base pair probability matrix, write plot to post script file
+    plt.matshow(bppm, fignum=name, cmap=plt.get_cmap(colormap))
+    plt.savefig('%s.ps' % (name), format='ps')
+    return
 
-# print sequence name, mfes and partition functions for both temperatures
-print godzilla.id
 
-# plot base pair probability matrix
-pyplot.matshow(bppm, fignum=godzilla.id)
+for monster in monsters:
+# calculate 1) foldcompound 2) partition function 3) base pair probability matrix in that order (!)
+    foldmonster = RNA.fold_compound(str(monster))
+    pfstruct, pf = foldmonster.pf()
+    bppm = foldmonster.bpp()
+    plot_bppm(bppm, monster.id)
 
-pyplot.show()
+"""
+# plot base pair probability matrix, write plot to post script file
+    plt.matshow(bppm, fignum=monster.id, cmap=plt.get_cmap(colormap))
+    figname = '%s.ps' % (monster.id)
+    plt.savefig(figname, format='ps')
+"""
 
+#plt.show()
 
 print '\n_____________________________\nBiopython version %s' % (Bio.__version__)
 print 'ViennaRNA Package version %s' % (RNA.__version__)

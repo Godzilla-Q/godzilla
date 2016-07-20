@@ -7,6 +7,7 @@ import sys
 import RNA
 import matplotlib
 import Bio
+import re # for regular expressions
 import matplotlib.pyplot as plt
 from Bio import SeqIO
 from Bio.Seq import Seq
@@ -22,10 +23,25 @@ md_high = RNA.md()
 md_low.temperature = 30
 md_high.temperature = 37
 
+def str2filename ( string ):
+    # replace every non-alphanumeric character (except _ and -) with "-"
+    # turn string into 'raw string'
+    # strip all '-' from start and end
+    rawstring = repr(string)
+    newstring = re.sub(r'[\W]', '-',rawstring)
+    newstring = newstring.strip('-')
+    # cut at 31 characters, remove remaining '-' or '_' at the end
+    newstring = newstring[:31]
+    newstring = newstring.strip('-_')
+    return newstring
+
 def plot_bppm ( bppm, name ):
-# plot base pair probability matrix, write plot to post script file
+    # call str2filename to make sure the filename is okay
+    goodname = str2filename(name)
+    # plot base pair probability matrix, write plot to post script file
     plt.matshow(bppm, fignum=name, cmap=plt.get_cmap('BuPu'))
-    plt.savefig('%s.ps' % (name), format='ps')
+    plt.savefig('%s.ps' % (goodname), format='ps')
+    plt.close()
     return
 
 for seq_file in SeqIO.parse(sys.stdin, "fasta"):
@@ -44,11 +60,8 @@ for seq_file in SeqIO.parse(sys.stdin, "fasta"):
     bppm_low = fc_low.bpp()
     bppm_high = fc_high.bpp()
     # plot bppm
-    plot_bppm(bppm_low, 'low')
-    plot_bppm(bppm_high, 'high')
-#todo: fix naming of the bppm plotfiles
-#    plot_bppm(bppm_low, '%s_low' % (seq_file.id))
-#    plot_bppm(bppm_high, '%s_high' % (seq_file.id))
+    plot_bppm(bppm_low, '%s_low' % (seq_file.id))
+    plot_bppm(bppm_high, '%s_high' % (seq_file.id))
     
     # print sequence name, mfes and partition functions for both temperatures
     print seq_file.id

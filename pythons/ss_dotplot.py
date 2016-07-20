@@ -12,10 +12,7 @@ import matplotlib.pyplot as plt
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
-
-"""godzilla = Seq('GAGACCCGTAAAAGGGTCTCGAAA', IUPAC.unambiguous_dna)
-foldgod = RNA.fold_compound(str(godzilla))
-print dir(foldgod)"""
+from matplotlib.backends.backend_pdf import PdfPages
     
 md_low = RNA.md()
 md_high = RNA.md()
@@ -35,12 +32,19 @@ def str2filename ( string ):
     newstring = newstring.strip('-_')
     return newstring
 
-def plot_bppm ( bppm, name ):
+def plot_2bppms ( bppm_low, bppm_high, name ):
     # call str2filename to make sure the filename is okay
     goodname = str2filename(name)
-    # plot base pair probability matrix, write plot to post script file
-    plt.matshow(bppm, fignum=name, cmap=plt.get_cmap('BuPu'))
-    plt.savefig('%s.ps' % (goodname), format='ps')
+    # initialize the pdf file
+    pp = PdfPages('%s.pdf' % (goodname))
+    # plot base pair probability matrix, include plottitle, write plot to pdf
+    plt.matshow(bppm_low, fignum='low', cmap=plt.get_cmap('BuPu'))
+    plt.title(md_low.temperature)
+    pp.savefig()
+    plt.matshow(bppm_high, fignum='high', cmap=plt.get_cmap('BuPu'))
+    plt.title(md_high.temperature)
+    pp.savefig()
+    pp.close()
     plt.close()
     return
 
@@ -59,9 +63,8 @@ for seq_file in SeqIO.parse(sys.stdin, "fasta"):
     # calculate base pair probability matrix
     bppm_low = fc_low.bpp()
     bppm_high = fc_high.bpp()
-    # plot bppm
-    plot_bppm(bppm_low, '%s_low' % (seq_file.id))
-    plot_bppm(bppm_high, '%s_high' % (seq_file.id))
+    # plot both bppms to one pdf
+    plot_2bppms(bppm_low, bppm_high, seq_file.id)
     
     # print sequence name, mfes and partition functions for both temperatures
     print seq_file.id

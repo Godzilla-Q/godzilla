@@ -36,6 +36,7 @@ for monster in monsters:
     bppm = foldmonster.bpp()
     plot_bppm(bppm, monster.id)
 
+    
 print '\n_____________________________\nBiopython version %s' % (Bio.__version__)
 print 'ViennaRNA Package version %s' % (RNA.__version__)
 print 'matplotlib version %s' % (matplotlib.__version__)

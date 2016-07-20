@@ -36,7 +36,7 @@ def plot_2bppms ( bppm_low, bppm_high, name ):
     # call str2filename to make sure the filename is okay
     goodname = str2filename(name)
     # initialize the pdf file
-    pp = PdfPages('%s.pdf' % (goodname))
+    pp = PdfPages('%s_bppm.pdf' % (goodname))
     # plot base pair probability matrix, include plottitle, write plot to pdf
     plt.matshow(bppm_low, fignum='low', cmap=plt.get_cmap('BuPu'))
     plt.title(md_low.temperature)
@@ -65,7 +65,10 @@ for seq_file in SeqIO.parse(sys.stdin, "fasta"):
     bppm_high = fc_high.bpp()
     # plot both bppms to one pdf
     plot_2bppms(bppm_low, bppm_high, seq_file.id)
-    
+    # plot mfe secondary structure
+    RNA.PS_rna_plot(sequ, struct_low, '%s_low_ss.ps' % (str2filename(seq_file.id)))    
+    RNA.PS_rna_plot(sequ, struct_high, '%s_high_ss.ps' % (str2filename(seq_file.id)))
+
     # print sequence name, mfes and partition functions for both temperatures
     print seq_file.id
     print mfe_low, mfe_high

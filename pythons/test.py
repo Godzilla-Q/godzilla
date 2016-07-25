@@ -2,7 +2,6 @@
 
 """Calculate accessibilities of RRS and start codon for both temperatures."""
 
-# from __future__ import print_function
 import sys
 import RNA
 from math import exp
@@ -67,13 +66,10 @@ for seq_file in SeqIO.parse(sys.stdin, "fasta"):
     sequ = str(seq_file.seq)
     # calculate sequence constraints for RRS and AUG
     constr1, constr2 = seqconstraints(sequ,RRS,start,spacer)
-    # generate the fold compounds for both temperatures and each constraint
+    # generate the fold compounds
     fc_low = RNA.fold_compound(sequ, md_low)
     fc_high = RNA.fold_compound(sequ, md_high)
-    # calculate mfe structure and mfe (no constraints)
-    struct_low, mfe_low = fc_low.mfe()
-    struct_high, mfe_high = fc_high.mfe()
-    # calculate partition function for both temperatures and all constraints
+    # calculate partition function
     pfstruct_low, pf_low = fc_low.pf()
     pfstruct_high, pf_high = fc_high.pf()
     # calculate accessibilities with function

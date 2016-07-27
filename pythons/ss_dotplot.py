@@ -6,10 +6,7 @@
 import sys
 import RNA
 import matplotlib
-import sys
-import RNA
 import Bio
-from math import exp
 import re # for regular expressions
 import matplotlib.pyplot as plt
 from math import exp
@@ -23,8 +20,8 @@ md_high = RNA.md()
 
 md_low.temperature = 30
 md_high.temperature = 37
-RRS = 'AAggAG'
-spacer = 6
+RRS = 'GGAGG'
+spacer = 9
 start = 'AUG'
 k = 1.9872041e-3
 

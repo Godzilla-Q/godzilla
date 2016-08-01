@@ -25,7 +25,7 @@ colormap = 'BuPu'
 def plot_bppm ( bppm, name ):
 # plot base pair probability matrix, write plot to post script file
     plt.matshow(bppm, fignum=name, cmap=plt.get_cmap(colormap))
-    plt.savefig('%s.ps' % (name), format='ps')
+    plt.savefig('{:s}.ps'.format(name), format='ps')
     plt.close()
     return
 
@@ -37,7 +37,7 @@ for monster in monsters:
     plot_bppm(bppm, monster.id)
 
     
-print '\n_____________________________\nBiopython version %s' % (Bio.__version__)
-print 'ViennaRNA Package version %s' % (RNA.__version__)
-print 'matplotlib version %s' % (matplotlib.__version__)
+print '\n_____________________________\nBiopython version {:s}'.format(Bio.__version__)
+print 'ViennaRNA Package version {:s}'.format(RNA.__version__)
+print 'matplotlib version {:s}'.format(matplotlib.__version__)
 

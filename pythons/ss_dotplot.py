@@ -20,8 +20,8 @@ md_high = RNA.md()
 
 md_low.temperature = 30
 md_high.temperature = 37
-RRS = 'GGAGG'
-spacer = 9
+RRS = 'AAGGAG'
+spacer = 6
 start = 'AUG'
 k = 1.9872041e-3
 
@@ -41,7 +41,7 @@ def plot_2bppms ( bppm_low, bppm_high, name ):
     # call str2filename to make sure the filename is okay
     goodname = str2filename(name)
     # initialize the pdf file
-    pp = PdfPages('%s_bppm.pdf' % (goodname))
+    pp = PdfPages('{}_bppm.pdf'.format(goodname))
     # plot base pair probability matrix, include plottitle, write plot to pdf
     plt.matshow(bppm_low, fignum='low', cmap=plt.get_cmap('BuPu'))
     plt.title(md_low.temperature)
@@ -58,7 +58,7 @@ def seqconstraints ( sequence, str_1, str_2, spacer ):
     str_1 = str_1.upper()  
     str_2 = str_2.upper()  
     constr_1 = re.sub(
-        '%s(?=.{%s}%s)' % (str_1, spacer, str_2),
+        '{:s}(?=.{{{:d}}}{:s})'.format(str_1, spacer, str_2),
         'x'*len(str_1),
         sequence
     )
@@ -68,7 +68,7 @@ def seqconstraints ( sequence, str_1, str_2, spacer ):
             constr_1
         )
     constr_2 = re.sub(
-        '(?<=%s.{%s})%s' % (str_1, spacer, str_2),
+        '(?<={:s}.{{{:d}}}){:s}'.format(str_1, spacer, str_2),
         'x'*len(str_2),
         sequence
     )
@@ -77,6 +77,7 @@ def seqconstraints ( sequence, str_1, str_2, spacer ):
             '.',
             constr_2
         )
+    print constr_1, constr_2
     return constr_1, constr_2
 
 def accessibility ( sequence, md, constr, pf_noconstr ):
@@ -110,8 +111,8 @@ for seq_file in SeqIO.parse(sys.stdin, "fasta"):
     # plot both bppms to one pdf
     plot_2bppms(bppm_low, bppm_high, seq_file.id)
     # plot mfe secondary structure
-    RNA.PS_rna_plot(sequ, struct_low, '%s_low_ss.ps' % (str2filename(seq_file.id)))    
-    RNA.PS_rna_plot(sequ, struct_high, '%s_high_ss.ps' % (str2filename(seq_file.id)))
+    RNA.PS_rna_plot(sequ, struct_low, '{:s}_low_ss.ps'.format(str2filename(seq_file.id)))    
+    RNA.PS_rna_plot(sequ, struct_high, '{:s}_high_ss.ps'.format(str2filename(seq_file.id)))
 
     
     # calculate sequence constraints for RRS and AUG
@@ -123,6 +124,7 @@ for seq_file in SeqIO.parse(sys.stdin, "fasta"):
     AUG_acces_high = accessibility(sequ,md_high,constr2,pf_high)
     # print sequence name, mfes and partition functions for both temperatures
     print seq_file.id, mfe_low, mfe_high, pf_low, pf_high, RRS_acces_low, RRS_acces_high, AUG_acces_low, AUG_acces_high
-print '\n_____________________________\nBiopython version %s' % (Bio.__version__)
-print 'ViennaRNA Package version %s' % (RNA.__version__)
-print 'matplotlib version %s' % (matplotlib.__version__)
+print '\n_____________________________\nBiopython version {:s}'.format(Bio.__version__)
+print 'ViennaRNA Package version {:s}'.format(RNA.__version__)
+print 'matplotlib version {:s}'.format(matplotlib.__version__)
+print 'Python{:s}'.format(sys.version)

@@ -91,6 +91,14 @@ def accessibility ( sequence, md, constr, pf_noconstr ):
         acces = 0
     return acces
 
+def versions_used():
+    return "\n_____________________________\n\
+Biopython {:s}\n\
+VRP {:s}\n\
+matplotlib {:s}\n\
+Python {:s}".format(Bio.__version__, RNA.__version__, matplotlib.__version__, sys.version)
+
+
 print 'name mfe_low mfe_high pf_low pf_high RRS_acces_low RRS_acces_high AUG_acces_low AUG_acces_high'
 
 for seq_file in SeqIO.parse(sys.stdin, "fasta"):
@@ -124,7 +132,5 @@ for seq_file in SeqIO.parse(sys.stdin, "fasta"):
     AUG_acces_high = accessibility(sequ,md_high,constr2,pf_high)
     # print sequence name, mfes and partition functions for both temperatures
     print seq_file.id, mfe_low, mfe_high, pf_low, pf_high, RRS_acces_low, RRS_acces_high, AUG_acces_low, AUG_acces_high
-print '\n_____________________________\nBiopython version {:s}'.format(Bio.__version__)
-print 'ViennaRNA Package version {:s}'.format(RNA.__version__)
-print 'matplotlib version {:s}'.format(matplotlib.__version__)
-print 'Python{:s}'.format(sys.version)
+    print versions_used()
+

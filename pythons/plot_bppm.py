@@ -9,6 +9,7 @@ import matplotlib
 import Bio
 import matplotlib.pyplot as plt
 from Bio.Seq import Seq
+from ss_dotplot import versions_used
 
 # Define sample sequence
 godzilla = Seq('GAGACCCGTAAAAGGGTCTCGAAAGTGTGTAAAAAACACAC')
@@ -29,15 +30,14 @@ def plot_bppm ( bppm, name ):
     plt.close()
     return
 
-for monster in monsters:
-# calculate 1) foldcompound 2) partition function 3) base pair probability matrix in that order (!)
-    foldmonster = RNA.fold_compound(str(monster))
-    pfstruct, pf = foldmonster.pf()
-    bppm = foldmonster.bpp()
-    plot_bppm(bppm, monster.id)
+def main():
+    for monster in monsters:
+        # calculate 1) foldcompound 2) partition function 3) base pair probability matrix in that order (!)
+        foldmonster = RNA.fold_compound(str(monster))
+        pfstruct, pf = foldmonster.pf()
+        bppm = foldmonster.bpp()
+        plot_bppm(bppm, monster.id)
+    print versions_used()
 
-    
-print '\n_____________________________\nBiopython version {:s}'.format(Bio.__version__)
-print 'ViennaRNA Package version {:s}'.format(RNA.__version__)
-print 'matplotlib version {:s}'.format(matplotlib.__version__)
-
+if __name__ == '__main__':
+    main()

@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
-"""Generate new sequence variation: switches the first base pair of a structure"""
+"""Generate variations of the bases of the stem; calculate the difference in thermodynamic parameters for two different temperatures"""
 
-# from __future__ import print_function
 import sys
 import RNA
 import re
 from Bio import SeqIO
 from Bio.Seq import Seq
 from ss_dotplot import versions_used
+from itertools import product
+from operator import itemgetter
 
-"""Switches the first base pair of the first stem loop of a sequence"""
+############### old version of the script, switching basepairs of a given stem
 
 def determine_bp( structure ):
     # gives out the position of the first basepair in a structure
@@ -24,7 +25,7 @@ def determine_bp( structure ):
     return a, b
 
 def second__bp( structure ):
-    # gives out the position of the first basepair in a structure
+    # gives out the position of the second basepair in a structure
     ptable = RNA.ptable(structure)[1:]
     a, b = 0, 0
     for index, item in enumerate(ptable):
@@ -58,6 +59,8 @@ def oldmain():
         print new.seq
     print versions_used()
 
+############### new version of script, work in progress!
+
 def calculate_values( sequence, structure, temperature1, temperature2 ):
     """Evaluate energy, entropy, enthalpy for each temperature"""
     temperature_model1 = RNA.md()
@@ -73,17 +76,31 @@ def calculate_values( sequence, structure, temperature1, temperature2 ):
     delta_enthalpy = (energy_of_struct1 + temperature1 * delta_entropy)
 #    delta_enthalpy2 = (energy_of_struct2 + temperature2 * delta_entropy)    
     return (delta_energy, delta_entropy, delta_enthalpy)
-    
-def main():
-    seq_object = Seq('ccccaaaaaagggg')
-    structure = '((((......))))'
-    results = calculate_values(str(seq_object), structure, 30, 37)
-    a, b = determine_bp(structure)
-    new_object = switch_bp(seq_object,a,b)
-    results_new = calculate_values(str(new_object), structure, 30, 37)
-    print str(seq_object), results
-    print str(new_object), results_new
 
+def combinations( stem_length, loop_length ):
+    """Yield all sequence combinations for a stem loop with fixed loop"""
+    basepair_set = ['au', 'ua', 'gc', 'cg', 'gu', 'ug']
+    center = 'a' * loop_length    
+    for basepairs in product(basepair_set, repeat = stem_length):
+        left, right = zip(*basepairs)
+        sequence = (''.join(left), center, ''.join(right[::-1])) 
+        yield ''.join(sequence)
+
+def sort_results( list_of_tuples, number ):
+    return sorted(list_of_tuples, key=itemgetter(number))
+        
+def main():
+    structure = '((((......))))'
+    results = []
+    for sequence in combinations(3, 6):
+        energy, entropy, enthalpy = calculate_values(sequence, structure, 30, 37)
+        results.append((sequence, energy, entropy, enthalpy))
+    for number in range(1, 4):
+        for line in sort_results(results, number):
+            print line[0], line[1], line[2], line[3]
+        print '\n'
+
+    
 if __name__ == '__main__':
     sys.exit(main())
  

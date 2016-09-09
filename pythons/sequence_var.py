@@ -14,8 +14,6 @@ from itertools import product
 from operator import itemgetter
 
 
-############### new version of script, work in progress!
-
 def temperature_reactivity( sequence, structure, temperature1, temperature2 ):
     """Evaluate temperature-dependent difference in energy, entropy, enthalpy."""
     temperature_model1 = RNA.md()
@@ -107,55 +105,3 @@ thermodynamic parameters for two different temperatures."""
     
 if __name__ == '__main__':
     sys.exit(main())
- 
-
-    
-
-############### old version of the script, switching basepairs of a given stem
-
-def determine_bp( structure ):
-    # gives out the position of the first basepair in a structure
-    ptable = RNA.ptable(structure)[1:]
-    a, b = 0, 0
-    for index, item in enumerate(ptable):
-        if item:
-            a = index + 1
-            b = item
-            break
-    return a, b
-
-def second__bp( structure ):
-    # gives out the position of the second basepair in a structure
-    ptable = RNA.ptable(structure)[1:]
-    a, b = 0, 0
-    for index, item in enumerate(ptable):
-        if item:
-            a = index + 2
-            b = item - 1
-            break
-    return a, b
-
-def switch_bp( seqrec, a, b ):
-    # switches basepair in SeqRecord indicated by the positions a and b to their complement
-    complement = seqrec.reverse_complement()[::-1]
-    if a < b:
-        new = seqrec[:a-1] + complement[a-1] + seqrec[a:b-1] + complement[b-1]+ seqrec[b:]
-    else:
-        new = seqrec
-        print 'WARNING: No valid basepairs in this structure'
-    return new
-
-def oldmain():
-    for original in SeqIO.parse(sys.stdin, "fasta"):
-        # obtain the sequence string
-        sequ = str(original.seq)
-        # generate the fold compound
-        fc = RNA.fold_compound(sequ)
-        # calculate mfe structure and mfe
-        struct, mfe = fc.mfe()
-        # change base pair
-        a, b = determine_bp(struct)
-        new = switch_bp(original,a,b)
-        print new.seq
-    print versions_used()
-

@@ -110,10 +110,11 @@ thermodynamic parameters for two different temperatures."""
     for sequence in variations(stem, loop):
         energy, entropy, enthalpy = temperature_reactivity(sequence, structure, temperature_1, temperature_2)
         gc_content = sequence_properties(sequence)
-        results.append((sequence, energy, entropy, enthalpy, gc_content))
+        e_profile = energy_profile(sequence, structure)
+        results.append((sequence, energy, entropy, enthalpy, gc_content, e_profile))
     for number in range(1, 4):
         for line in sort_results(results, number):
-            print line[0], line[1], line[2], line[3], line[4]
+            print line[0], line[1], line[2], line[3], line[4], line[5]
         print '\n'
 
     

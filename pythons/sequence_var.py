@@ -12,6 +12,7 @@ from Bio.SeqUtils import GC
 from ss_dotplot import versions_used
 from itertools import product
 from operator import itemgetter
+from subprocess import Popen, PIPE
 
 
 def temperature_reactivity( sequence, structure, temperature1, temperature2 ):
@@ -83,6 +84,19 @@ def argument_parser( arguments ):
 def create_structure( stem, loop ):
     """Create structure string corresponding to the sequences."""
     return ''.join(['('*stem, '.'*loop, ')'*stem])
+
+def energy_profile( sequence, structure ):
+    """Calculate energy contribution of each basepair - call RNAeval from the shell and to obtain the values from the stdout of RNAeval manually"""
+    eval_input = '\n'.join([sequence,structure])
+    subprocess_eval = Popen(['RNAeval', '-v'], stdin=PIPE, stdout=PIPE, universal_newlines=True)
+    eval_output = subprocess_eval.communicate(input=eval_input)
+    result_list = []
+    for line in eval_output[0].splitlines():
+        if ':' in line:
+            trash, treasure = line.split(':')
+            result_list.append(float(treasure)/100)
+    return tuple(result_list)
+    # check the units of the results! 10cal/mol? Any way to improve my code/make it more elegant?
 
 def main():
     """Generate variations of the bases of the stem; calculate the difference in

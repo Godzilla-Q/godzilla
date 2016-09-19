@@ -9,6 +9,7 @@ from sequence_var import sort_results
 from sequence_var import sequence_properties
 from sequence_var import argument_parser
 from sequence_var import create_structure
+from sequence_var import energy_profile
 
 import sys
 import RNA
@@ -147,7 +148,15 @@ class TestCreateStructure(unittest.TestCase):
         self.assertEqual(create_structure(3,6), '(((......)))')
         self.assertEqual(create_structure(8,5), '((((((((.....))))))))')
 
-
+class TestEnergyProfile(unittest.TestCase):
+    example_sequence = 'cgcaaagcg'
+    example_structure = '(((...)))'
+    example_result = (0, -2.4, -3.4, 5.4)
+    
+    def test_energy_profile(self):
+        """Test evaluation of base pair energy"""
+        # maybe include more tests for strange cases?
+        self.assertEqual(energy_profile(self.example_sequence, self.example_structure), self.example_result)
         
 if __name__ == '__main__':
     unittest.main()

@@ -4,13 +4,8 @@
 
 import sys
 import RNA
-import re
 import argparse
-from Bio import SeqIO
-from Bio.Seq import Seq
 from Bio.SeqUtils import GC
-from itertools import product
-from operator import itemgetter
 from subprocess import Popen, PIPE
 
 
@@ -33,7 +28,7 @@ def gc_content( sequence ):
     """Calculate GC content"""
     return GC(sequence)
 
-def argument_parser( arguments ): # add arguments for sequence and structure!
+def argument_parser( arguments ):
     """If arguments from command line are present, override default parameters. Ensure that sequence matches structure length. Manage help messages"""
     
     parser = argparse.ArgumentParser(
@@ -62,18 +57,18 @@ def energy_profile( sequence, structure ):
             trash, treasure = line.split(':')
             result_list.append(float(treasure)/100)
     return tuple(result_list)
-    # check the units of the results! 10cal/mol? Any way to improve my code/make it more elegant?
 
 def main():
     """Calculate the difference in thermodynamic parameters for two different temperatures and calculate descriptors for the sequence"""
+    print 'sequence, structure, energy_of_struct1, energy_of_struct2, gc_content, e0, e1, e2, e3, e4, e5, delta_energy'    
     parser = argument_parser(sys.argv[1:])
     temperature_1, temperature_2 = parser.temperatures
-    structure = '(((......)))'
-    sequence = 'gggaaaaaaccc'
-    energy, entropy, enthalpy = temperature_reactivity(sequence, structure, temperature_1, temperature_2)
-    gc = gc_content(sequence)
-    e_profile = energy_profile(sequence, structure)
-    print sequence, structure, energy, entropy, enthalpy, gc, e_profile
+    for line in sys.stdin:
+        sequence, structure = line.split()
+        delta_energy, energy_of_struct1, energy_of_struct2 = temperature_reactivity(sequence, structure, temperature_1, temperature_2)
+        gc = gc_content(sequence)
+        e0, e1, e2, e3, e4, e5 = energy_profile(sequence, structure) #improve flexibility!
+        print '{},{},{},{},{},{},{},{},{},{},{},{}'.format(sequence, structure, energy_of_struct1, energy_of_struct2, gc, e0, e1, e2, e3, e4, e5, delta_energy)
 
     
 if __name__ == '__main__':

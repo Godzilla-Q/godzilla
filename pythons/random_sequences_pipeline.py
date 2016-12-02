@@ -75,10 +75,10 @@ def main():
     """Generate a stem-loop structure and all possible variations of the bases of the stem."""
     parser = argument_parser(sys.argv[1:])
     length = parser.length
-    n1 = parser.n1
-    s1 = parser.s1
-    n2 = parser.n2
-    s2 = parser.s2
+    n1 = parser.number1
+    s1 = parser.seed1
+    n2 = parser.number2
+    s2 = parser.seed2
     structure = unconstrained_structure(length)
     random_structures = []
     for randseq in random_sequences(structure, n1, s1):

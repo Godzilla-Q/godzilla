@@ -14,10 +14,34 @@ GODZILLA = 'Queen of monsters'
 class TestReactivityValues(unittest.TestCase):
     def test_temperature_reactivity(self):
         "Compare to previously calculated results"
-        self.assertEqual(temperature_reactivity('auaaaaaaauau', '(((......)))', 30, 37), (0.43000006675720215, 2.7699999809265137, 3.200000047683716))
-        self.assertEqual(temperature_reactivity('aaaaaaaaaauuuu', '((((......))))', 30, 37), (0.5, 2.4000000953674316, 2.9000000953674316))
-        self.assertEqual(temperature_reactivity('gggaaaaaauuu', '(((......)))', 30, 37), (0.6999998092651367, 4.400000095367432, 5.099999904632568))
-        self.assertEqual(temperature_reactivity('gcccaaaaaagggc', '((((......))))', 30, 37), (1.0500001907348633, -7.150000095367432, -6.099999904632568))
+        self.assertEqual(temperature_reactivity('auaaaaaaauau',
+                                                '(((......)))',
+                                                30,
+                                                37), (
+                                                    0.13437501885928185,
+                                                    2.7699999809265137,
+                                                    3.200000047683716))
+        self.assertEqual(temperature_reactivity('aaaaaaaaaauuuu',
+                                                '((((......))))',
+                                                30,
+                                                37), (
+                                                    0.17241378743356547,
+                                                    2.4000000953674316,
+                                                    2.9000000953674316))
+        self.assertEqual(temperature_reactivity('gggaaaaaauuu',
+                                                '(((......)))',
+                                                30,
+                                                37), (
+                                                    0.1372548671283884,
+                                                    4.400000095367432,
+                                                    5.099999904632568))
+        self.assertEqual(temperature_reactivity('gcccaaaaaagggc',
+                                                '((((......))))',
+                                                30,
+                                                37), (
+                                                    0.17213118150009377,
+                                                    -7.150000095367432,
+                                                    -6.099999904632568))
 
 class TestGCContent(unittest.TestCase):
     def test_gc_content(self):

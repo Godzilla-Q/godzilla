@@ -54,80 +54,106 @@ def bp_stats( sequence, structure ): # work in progress!
     # make a list of tuples containing the basepairs
     pairlist = zip(seq_l, pair_partners)
     
-    # make a list indicating whether the bp/unpaired base sits in the middle or on the edge
-    mrlist = []
-    
-    structure_l = list(structure)
-    if structure_l[0] == structure_l[1] and structure_l[0] == '.':
-        mrlist.append('m')
-    else:
-        mrlist.append('r')
-    for i, j, k in zip(structure_l, structure_l[1:], structure_l[2:]):
-        if i == j == k:
-            mrlist.append('m')
-        else:
-            mrlist.append('r')
-    if structure_l[-1] == structure_l[-2] and structure_l[-1] == '.':
-        mrlist.append('m')
-    else:
-        mrlist.append('r')
-    
-    mrlist.append('m')
-    # split pairlist in two lists, one containing the middle pairs, one the edge pairs
-    list_m = []
-    list_r = []
-    for i, j in zip(pairlist, mrlist):
-        if j == 'm':
-            list_m.append(i)
-        if j == 'r':
-            list_r.append(i)
-    
-    # count all possible basepairs and all unpaired bases in the middle list
-    AU_m = list_m.count(('A', 'U')) + list_m.count(('U', 'A'))
-    GU_m = list_m.count(('G', 'U')) + list_m.count(('U', 'G'))
-    GC_m = list_m.count(('G', 'C')) + list_m.count(('C', 'G'))
-    A_m = list_m.count(('A', '-'))
-    C_m = list_m.count(('C', '-'))
-    G_m = list_m.count(('G', '-'))
-    U_m = list_m.count(('U', '-'))
+    # split pairlist in lists, depending on whether the bp/unpaired base sits in the middle or on the edge and whether the unpaired base is 3' or 5' of the next basepair
 
-    # calculate all middle basepairs and all middle unpaired bases to normalize the individual values
-    bp_m = AU_m + GU_m + GC_m
-    AU_m = float(AU_m) / bp_m
-    GU_m = float(GU_m) / bp_m
-    GC_m = float(GC_m) / bp_m
-    up_m = A_m + C_m + G_m + U_m
-    A_m = float(A_m) / up_m
-    C_m = float(C_m) / up_m
-    G_m = float(G_m) / up_m
-    U_m = float(U_m) / up_m    
+    bp_m = []
+    up_m = []
+    bp_r = []
+    up_r5 = []
+    up_r3 = []
+    structure_l = list(structure)
+    if structure_l[0] == structure_l[1]:
+        if structure[0] == '.':
+            up_m.append(pairlist[0])
+        else:
+            bp_r.append(pairlist[0])
+    else:
+        if structure[0] == '.':
+            up_r5.append(pairlist[0])
+        else:
+            bp_r.append(pairlist[0])
+
+    for i, j, k, l in zip(structure_l, structure_l[1:], structure_l[2:], pairlist[1:]):
+        print i, j, k, l
+        if i == j == k:
+            if j == '.':
+                up_m.append(l)
+            else:
+                bp_m.append(l)
+        else:
+            if j == '.':
+                if i == ')' or i == '(':
+                    up_r3.append(l)
+                if k == ')' or k == '(':
+                    up_r5.append(l)
+            else:
+                bp_r.append(l)
+
+    if structure_l[-1] == structure_l[-2]:
+        if structure[0] == '.':
+            up_m.append(pairlist[-1])
+        else:
+            bp_r.append(pairlist[-1])
+    else:
+        if structure[0] == '.':
+            up_r3.append(pairlist[-1])
+        else:
+            bp_r.append(pairlist[-1])
+
+    # count all possible basepairs and all unpaired bases in the middle lists
+    AU_m = bp_m.count(('A', 'U')) + bp_m.count(('U', 'A'))
+    GU_m = bp_m.count(('G', 'U')) + bp_m.count(('U', 'G'))
+    GC_m = bp_m.count(('G', 'C')) + bp_m.count(('C', 'G'))
+    A_m = up_m.count(('A', '-'))
+    C_m = up_m.count(('C', '-'))
+    G_m = up_m.count(('G', '-'))
+    U_m = up_m.count(('U', '-'))
+
+    # normalize the individual values
+    AU_m = float(AU_m) / len(bp_m)
+    GU_m = float(GU_m) / len(bp_m)
+    GC_m = float(GC_m) / len(bp_m)
+
+    A_m = float(A_m) / len(up_m)
+    C_m = float(C_m) / len(up_m)
+    G_m = float(G_m) / len(up_m)
+    U_m = float(U_m) / len(up_m)    
     
     results_m = [AU_m, GU_m, GC_m, A_m, C_m, G_m, U_m]
 
-    # count all possible basepairs and all unpaired bases in the edge list    
-    AU_r = list_r.count(('A', 'U')) + list_r.count(('U', 'A'))
-    GU_r = list_r.count(('G', 'U')) + list_r.count(('U', 'G'))
-    GC_r = list_r.count(('G', 'C')) + list_r.count(('C', 'G'))    
-    A_r = list_r.count(('A', '-'))
-    C_r = list_r.count(('C', '-'))
-    G_r = list_r.count(('G', '-'))
-    U_r = list_r.count(('U', '-'))
+    # count all possible basepairs and all unpaired bases in the edge lists 
+    AU_r = bp_r.count(('A', 'U')) + bp_r.count(('U', 'A'))
+    GU_r = bp_r.count(('G', 'U')) + bp_r.count(('U', 'G'))
+    GC_r = bp_r.count(('G', 'C')) + bp_r.count(('C', 'G'))    
 
-    # calculate all edge basepairs and all edge unpaired bases to normalize the individual values
-    bp_r = AU_r + GU_r + GC_r
-    AU_r = float(AU_r) / bp_r
-    GU_r = float(GU_r) / bp_r
-    GC_r = float(GC_r) / bp_r
-    up_r = A_r + C_r + G_r + U_r
-    A_r = float(A_r) / up_r
-    C_r = float(C_r) / up_r
-    G_r = float(G_r) / up_r
-    U_r = float(U_r) / up_r    
+    A_r5 = up_r5.count(('A', '-'))
+    C_r5 = up_r5.count(('C', '-'))
+    G_r5 = up_r5.count(('G', '-'))
+    U_r5 = up_r5.count(('U', '-'))
+
+    A_r3 = up_r3.count(('A', '-'))
+    C_r3 = up_r3.count(('C', '-'))
+    G_r3 = up_r3.count(('G', '-'))
+    U_r3 = up_r3.count(('U', '-'))
+
+    # normalize the individual values
+    AU_r = float(AU_r) / len(bp_r)
+    GU_r = float(GU_r) / len(bp_r)
+    GC_r = float(GC_r) / len(bp_r)
+
+    A_r5 = float(A_r5) / len(up_r5)
+    C_r5 = float(C_r5) / len(up_r5)
+    G_r5 = float(G_r5) / len(up_r5)
+    U_r5 = float(U_r5) / len(up_r5)    
+
+    A_r3 = float(A_r3) / len(up_r3)
+    C_r3 = float(C_r3) / len(up_r3)
+    G_r3 = float(G_r3) / len(up_r3)
+    U_r3 = float(U_r3) / len(up_r3)    
     
-    results_r = [AU_r, GU_r, GC_r, A_r, C_r, G_r, U_r]
+    results_r = [AU_r, GU_r, GC_r, A_r5, C_r5, G_r5, U_r5, A_r3, C_r3, G_r3, U_r3]
     
     results = results_m + results_r
-#    results = [float(i) / length for i in results]
     results.append(GC(sequence))
     return results
 

@@ -58,7 +58,7 @@ def bp_stats( sequence, structure ): # work in progress!
     mrlist = []
     
     structure_l = list(structure)
-    if structure_l[0] == structure_l[1]:
+    if structure_l[0] == structure_l[1] and structure_l[0] == '.':
         mrlist.append('m')
     else:
         mrlist.append('r')
@@ -67,7 +67,7 @@ def bp_stats( sequence, structure ): # work in progress!
             mrlist.append('m')
         else:
             mrlist.append('r')
-    if structure_l[-1] == structure_l[-2]:
+    if structure_l[-1] == structure_l[-2] and structure_l[-1] == '.':
         mrlist.append('m')
     else:
         mrlist.append('r')
@@ -85,12 +85,25 @@ def bp_stats( sequence, structure ): # work in progress!
     # count all possible basepairs and all unpaired bases in the middle list
     AU_m = list_m.count(('A', 'U')) + list_m.count(('U', 'A'))
     GU_m = list_m.count(('G', 'U')) + list_m.count(('U', 'G'))
-    GC_m = list_m.count(('G', 'C')) + list_m.count(('C', 'G'))    
+    GC_m = list_m.count(('G', 'C')) + list_m.count(('C', 'G'))
     A_m = list_m.count(('A', '-'))
     C_m = list_m.count(('C', '-'))
     G_m = list_m.count(('G', '-'))
     U_m = list_m.count(('U', '-'))
+
+    # calculate all middle basepairs and all middle unpaired bases to normalize the individual values
+    bp_m = AU_m + GU_m + GC_m
+    AU_m = float(AU_m) / bp_m
+    GU_m = float(GU_m) / bp_m
+    GC_m = float(GC_m) / bp_m
+    up_m = A_m + C_m + G_m + U_m
+    A_m = float(A_m) / up_m
+    C_m = float(C_m) / up_m
+    G_m = float(G_m) / up_m
+    U_m = float(U_m) / up_m    
+    
     results_m = [AU_m, GU_m, GC_m, A_m, C_m, G_m, U_m]
+
     # count all possible basepairs and all unpaired bases in the edge list    
     AU_r = list_r.count(('A', 'U')) + list_r.count(('U', 'A'))
     GU_r = list_r.count(('G', 'U')) + list_r.count(('U', 'G'))
@@ -99,6 +112,18 @@ def bp_stats( sequence, structure ): # work in progress!
     C_r = list_r.count(('C', '-'))
     G_r = list_r.count(('G', '-'))
     U_r = list_r.count(('U', '-'))
+
+    # calculate all edge basepairs and all edge unpaired bases to normalize the individual values
+    bp_r = AU_r + GU_r + GC_r
+    AU_r = float(AU_r) / bp_r
+    GU_r = float(GU_r) / bp_r
+    GC_r = float(GC_r) / bp_r
+    up_r = A_r + C_r + G_r + U_r
+    A_r = float(A_r) / up_r
+    C_r = float(C_r) / up_r
+    G_r = float(G_r) / up_r
+    U_r = float(U_r) / up_r    
+    
     results_r = [AU_r, GU_r, GC_r, A_r, C_r, G_r, U_r]
     
     results = results_m + results_r

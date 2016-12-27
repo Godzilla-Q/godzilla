@@ -26,15 +26,50 @@ class TestBPStats(unittest.TestCase):
         structure1 = '....((((.....))))........((((...))))(((((((.(((((((.......)))))))...)))))))....((((.......))))......'
         sequence1 = 'AAGUCGAAACCGGUUUGUACUGCCGGGUCAAAGACCUGUCGUUAAAGUUUUAUCGCGGAGGGUUUUAAAGCGGCAAACGCGAUUUAGUCGAUCGCCUCAA'
 
-        expected_results1 = [0.08, 0.14, 0.10, 0.09, 0.11, 0.06, 0.05, 0.12, 0.0, 0.08, 0.07, 0.01, 0.05, 0.04, 48.0]
+        expected_results1 = [0.0025,
+                             0.004375,
+                             0.003125,
+                             0.002903225806451613,
+                             0.0035483870967741938,
+                             0.001935483870967742,
+                             0.0016129032258064516,
+                             0.006,
+                             0.0,
+                             0.004,
+                             0.004117647058823529,
+                             0.000588235294117647,
+                             0.0029411764705882353,
+                             0.002352941176470588,
+                             48.0]
         self.assertEqual(bp_stats(sequence1, structure1), expected_results1)
 
         structure2 = '.(((......))).'
         sequence2 = 'AGUGCUCCCACACC'
 
-        expected_results2 = [0.14285714285714285, 0.0, 0.0, 0.0, 0.21428571428571427, 0.0, 0.07142857142857142, 0.0, 0.0, 0.2857142857142857, 0.14285714285714285, 0.14285714285714285, 0.0, 0.0, 64.28571428571429]
+        expected_results2 = [0.07142857142857142,
+                             0.0,
+                             0.0,
+                             0.0,
+                             0.05357142857142857,
+                             0.0,
+                             0.017857142857142856,
+                             0.0,
+                             0.0,
+                             0.07142857142857142,
+                             0.03571428571428571,
+                             0.03571428571428571,
+                             0.0,
+                             0.0,
+                             64.28571428571429]
 
         self.assertEqual(bp_stats(sequence2, structure2), expected_results2)
+
+        structure3 = '(((......)))'
+        sequence3 = 'CCCAAAAAAGGG'
+
+        expected_results3 = [0.0, 0.0, 0.08333333333333333, 0.08333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.08333333333333333, 0.08333333333333333, 0.0, 0.0, 0.0, 50.0]
+
+        self.assertEqual(bp_stats(sequence3, structure3), expected_results3)
         
 
     

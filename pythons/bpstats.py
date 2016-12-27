@@ -127,7 +127,7 @@ def bp_stats( sequence, structure ): # work in progress!
     results_r = [AU_r, GU_r, GC_r, A_r, C_r, G_r, U_r]
     
     results = results_m + results_r
-    results = [float(i) / length for i in results]
+#    results = [float(i) / length for i in results]
     results.append(GC(sequence))
     return results
 

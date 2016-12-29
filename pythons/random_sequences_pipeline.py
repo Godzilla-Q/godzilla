@@ -27,7 +27,7 @@ def argument_parser( arguments ):
         '-n1', '--number1',
          default=10,
         type=int,
-        choices=xrange(1, 10),
+        choices=xrange(1, 101),
         help='number of random sequences created at the start'
     )
     parser.add_argument(

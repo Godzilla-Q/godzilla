@@ -19,7 +19,8 @@ def temperature_reactivity( sequence, structure, temperature1, temperature2 ):
     fc2 = RNA.fold_compound(sequence, temperature_model2)
     energy_of_struct1 = fc1.eval_structure(structure)
     energy_of_struct2 = fc2.eval_structure(structure)
-    delta_energy = abs((energy_of_struct2 - energy_of_struct1) / energy_of_struct2)
+    # normalize delta_energy, add 0.001 to prevent division by 0
+    delta_energy = abs((energy_of_struct2 - energy_of_struct1) / (energy_of_struct2 + 0.001))
 
     return (delta_energy, energy_of_struct1, energy_of_struct2)
 

@@ -74,7 +74,6 @@ def bp_stats( sequence, structure ): # work in progress!
             bp_r.append(pairlist[0])
 
     for i, j, k, l in zip(structure_l, structure_l[1:], structure_l[2:], pairlist[1:]):
-        print i, j, k, l
         if i == j == k:
             if j == '.':
                 up_m.append(l)
@@ -159,14 +158,14 @@ def bp_stats( sequence, structure ): # work in progress!
 
 def main(): 
     """Calculate the difference in thermodynamic parameters for two different temperatures and calculate descriptors for the sequence"""
-    print 'sequence, structure, energy_of_struct1, energy_of_struct2, AU_m, GU_m, GC_m, A_m, C_m, G_m, U_m, AU_r, GU_r, GC_r, A_r, C_r, G_r, U_r, GCcontent, delta_energy'
+    print 'sequence, structure, energy_of_struct1, energy_of_struct2, AU_m, GU_m, GC_m, A_m, C_m, G_m, U_m, AU_r, GU_r, GC_r, A_r5, C_r5, G_r5, U_r5, A_r3, C_r3, G_r3, U_r3, GCcontent, delta_energy'
     parser = argument_parser(sys.argv[1:])
     temperature_1, temperature_2 = parser.temperatures
     for line in sys.stdin:
         sequence, structure = line.split()
         delta_energy, energy_of_struct1, energy_of_struct2 = temperature_reactivity(sequence, structure, temperature_1, temperature_2)
-        [AU_m, GU_m, GC_m, A_m, C_m, G_m, U_m, AU_r, GU_r, GC_r, A_r, C_r, G_r, U_r, GCcontent] = bp_stats(sequence, structure)
-        results = [sequence, structure, energy_of_struct1, energy_of_struct2, AU_m, GU_m, GC_m, A_m, C_m, G_m, U_m, AU_r, GU_r, GC_r, A_r, C_r, G_r, U_r, GCcontent, delta_energy]
+        [AU_m, GU_m, GC_m, A_m, C_m, G_m, U_m, AU_r, GU_r, GC_r, A_r5, C_r5, G_r5, U_r5, A_r3, C_r3, G_r3, U_r3, GCcontent] = bp_stats(sequence, structure)
+        results = [sequence, structure, energy_of_struct1, energy_of_struct2, AU_m, GU_m, GC_m, A_m, C_m, G_m, U_m, AU_r, GU_r, GC_r, A_r5, C_r5, G_r5, U_r5, A_r3, C_r3, G_r3, U_r3, GCcontent, delta_energy]
         print ', '.join(map(str, results))
             
     
